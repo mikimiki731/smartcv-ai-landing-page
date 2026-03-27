@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CaseBuilder | The Intelligent Career Engine</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-deep:#020202;--bg-surface:#080808;--bg-card:#0d0d0d;
+            --accent:#6366f1;--accent-glow:rgba(99,102,241,0.18);--accent-dim:rgba(99,102,241,0.08);
+            --green:#10b981;--green-dim:rgba(16,185,129,0.1);--red-dim:rgba(239,68,68,0.12);
+            --text-primary:#ffffff;--text-secondary:#88888e;
+            --border:rgba(255,255,255,0.06);--border-hover:rgba(255,255,255,0.12);
+            --transition:all 0.7s cubic-bezier(0.19,1,0.22,1);
+            --container-width:1200px;--mono:'JetBrains Mono',monospace;
+        }
+        *{margin:0;padding:0;box-sizing:border-box;}
+        html{scroll-behavior:smooth;background:var(--bg-deep);}
+        body{font-family:'Inter',sans-serif;background-color:var(--bg-deep);color:var(--text-primary);line-height:1.5;overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+        body::before{content:"";position:fixed;top:0;left:0;width:100vw;height:100vh;background-image:url("https://grainy-gradients.vercel.app/noise.svg");opacity:0.03;pointer-events:none;z-index:9999;}
+        .container{max-width:var(--container-width);margin:0 auto;padding:0 2rem;}
+        .reveal{opacity:0;transform:translateY(30px);transition:var(--transition);}
+        .reveal.active{opacity:1;transform:translateY(0);}
+
+        /* NAV */
+        header{position:fixed;width:100%;top:0;z-index:1000;background:rgba(2,2,2,0.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);height:80px;display:flex;align-items:center;}
+        nav{width:100%;display:flex;justify-content:space-between;align-items:center;}
+        .logo{font-weight:900;letter-spacing:3px;color:#fff;text-decoration:none;font-size:0.9rem;}
+
+        /* HERO */
+        .hero{padding:260px 0 160px;text-align:center;position:relative;}
+        .hero-glow{position:absolute;top:0;left:50%;transform:translateX(-50%);width:100%;height:100%;background:radial-gradient(circle at 50% 20%,var(--accent-glow) 0%,transparent 50%);z-index:-1;pointer-events:none;}
+        h1{font-size:clamp(3.5rem,12vw,7rem);font-weight:900;letter-spacing:-0.06em;line-height:0.9;margin-bottom:2.5rem;background:linear-gradient(180deg,#fff 40%,rgba(255,255,255,0.2) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+
+        /* BUTTONS */
+        .btn{padding:16px 36px;border-radius:4px;font-weight:700;text-decoration:none;transition:var(--transition);font-size:0.85rem;text-transform:uppercase;letter-spacing:1.5px;display:inline-block;}
+        .btn-primary{background:#fff;color:#000;}
+        .btn-primary:hover{transform:scale(1.05);box-shadow:0 20px 40px rgba(0,0,0,0.5);}
+        .btn-outline{border:1px solid var(--border);color:#fff;}
+        .btn-outline:hover{background:#fff;color:#000;}
+
+        /* PRICING */
+        .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:1.5rem;margin-top:4rem;}
+        .card{background:var(--bg-card);border:1px solid var(--border);padding:4rem 3rem;border-radius:4px;transition:var(--transition);position:relative;overflow:hidden;}
+        .card:hover{border-color:var(--accent);background:#111;}
+        .card-pro{position:relative;border:none;padding:1px;background:linear-gradient(90deg,var(--accent),#ff0080,var(--accent));background-size:200% 200%;animation:gradientMove 4s linear infinite;border-radius:5px;}
+        .card-pro-inner{background:var(--bg-card);padding:4rem 3rem;border-radius:3px;height:100%;}
+        @keyframes gradientMove{0%{background-position:0% 50%;}100%{background-position:200% 50%;}}
+
+        /* SVG ICONS */
+        .icon-wrap{width:52px;height:52px;background:var(--accent-dim);border:1px solid rgba(99,102,241,0.2);border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:2rem;flex-shrink:0;transition:var(--transition);}
+        .feature-card:hover .icon-wrap{background:rgba(99,102,241,0.14);border-color:rgba(99,102,241,0.4);}
+        .icon-wrap svg{width:22px;height:22px;stroke:var(--accent);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;}
+        .wf-icon-wrap{width:80px;height:80px;border:1px solid var(--border);border-radius:4px;background:var(--bg-card);display:flex;align-items:center;justify-content:center;margin-bottom:2.5rem;transition:var(--transition);position:relative;flex-shrink:0;}
+        .wf-icon-wrap svg{width:26px;height:26px;stroke:var(--text-secondary);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;transition:var(--transition);}
+        .workflow-step:hover .wf-icon-wrap{border-color:var(--accent);background:var(--accent-glow);transform:scale(1.05);}
+        .workflow-step:hover .wf-icon-wrap svg{stroke:var(--accent);}
+        .proof-icon-wrap{width:30px;height:30px;border-radius:50%;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.22);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+        .proof-icon-wrap svg{width:14px;height:14px;stroke:var(--green);fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;}
+
+        /* FEATURES */
+        #features{padding:160px 0;}
+        .features-header{display:flex;justify-content:space-between;align-items:flex-end;gap:2rem;flex-wrap:wrap;}
+        .features-header-left{max-width:580px;}
+        .features-header-right{text-align:right;color:var(--text-secondary);font-size:0.85rem;line-height:1.9;max-width:320px;}
+        .features-grid-top{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:4rem;}
+        .features-grid-bottom{display:grid;grid-template-columns:repeat(2,1fr);gap:1.5rem;margin-top:1.5rem;}
+        .feature-card{background:var(--bg-card);border:1px solid var(--border);border-radius:4px;padding:3.5rem 3rem;transition:var(--transition);position:relative;overflow:hidden;}
+        .feature-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:0;transition:var(--transition);}
+        .feature-card:hover{border-color:rgba(99,102,241,0.3);background:#0f0f0f;transform:translateY(-4px);}
+        .feature-card:hover::before{opacity:1;}
+        .feature-index{position:absolute;top:2rem;right:2rem;font-family:var(--mono);font-size:0.62rem;font-weight:500;color:rgba(255,255,255,0.07);letter-spacing:0.05em;}
+        .feature-card h3{font-size:1.1rem;font-weight:700;margin-bottom:0.75rem;letter-spacing:-0.02em;}
+        .feature-card p{color:var(--text-secondary);font-size:0.88rem;line-height:1.78;}
+        .feature-tag{display:inline-flex;align-items:center;gap:6px;margin-top:1.5rem;font-family:var(--mono);font-size:0.62rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);padding:5px 10px;background:var(--accent-dim);border-radius:3px;border:1px solid rgba(99,102,241,0.15);}
+        .feature-tag::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--accent);display:inline-block;flex-shrink:0;}
+        .feature-card-wide{display:flex;align-items:center;gap:4rem;}
+        .feature-card-wide .feature-body{flex:1;}
+        .feature-card-wide .feature-visual{flex:1;height:160px;background:var(--bg-surface);border-radius:4px;border:1px solid var(--border);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;}
+        .score-bars{display:flex;gap:8px;align-items:flex-end;height:100px;padding:0 1.5rem;}
+        .score-bar{width:22px;border-radius:3px 3px 0 0;background:linear-gradient(180deg,var(--accent) 0%,rgba(99,102,241,0.3) 100%);animation:barPulse 2.5s ease-in-out infinite;}
+        .score-bar:nth-child(1){height:40%;animation-delay:0s;}
+        .score-bar:nth-child(2){height:65%;animation-delay:0.1s;}
+        .score-bar:nth-child(3){height:80%;animation-delay:0.2s;}
+        .score-bar:nth-child(4){height:55%;animation-delay:0.3s;}
+        .score-bar:nth-child(5){height:90%;animation-delay:0.4s;background:linear-gradient(180deg,var(--green) 0%,rgba(16,185,129,0.3) 100%);}
+        .score-bar:nth-child(6){height:72%;animation-delay:0.5s;}
+        .score-bar:nth-child(7){height:45%;animation-delay:0.6s;}
+        @keyframes barPulse{0%,100%{opacity:1;}50%{opacity:0.6;}}
+        .token-stream{font-family:var(--mono);font-size:0.6rem;padding:1rem 1.5rem;line-height:2.1;overflow:hidden;height:100%;width:100%;}
+        .token{display:inline-block;padding:2px 6px;border-radius:3px;margin:1px;font-weight:500;}
+        .token-green{background:rgba(16,185,129,0.12);color:#10b981;border:1px solid rgba(16,185,129,0.18);}
+        .token-blue{background:rgba(99,102,241,0.12);color:#818cf8;border:1px solid rgba(99,102,241,0.2);}
+        .token-gray{background:rgba(255,255,255,0.04);color:var(--text-secondary);border:1px solid rgba(255,255,255,0.06);}
+        .token-red{background:var(--red-dim);color:#f87171;border:1px solid rgba(239,68,68,0.18);}
+
+        /* WORKFLOW */
+        #workflow{padding:160px 0;position:relative;}
+        .workflow-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:100px;gap:2rem;flex-wrap:wrap;}
+        .workflow-header h2{font-size:0.8rem;text-transform:uppercase;letter-spacing:5px;color:var(--accent);margin-bottom:1rem;}
+        .workflow-header-title{font-size:2.5rem;font-weight:800;max-width:480px;line-height:1.1;}
+        .workflow-header-meta{text-align:right;color:var(--text-secondary);font-family:var(--mono);font-size:0.78rem;line-height:2.2;}
+        .workflow-track{position:relative;}
+        .workflow-track-line{position:absolute;top:40px;left:0;right:0;height:1px;background:var(--border);z-index:0;}
+        .workflow-track-progress{position:absolute;top:40px;left:0;height:1px;width:0%;background:linear-gradient(90deg,var(--accent),#ff0080);z-index:1;transition:width 1.5s ease;}
+        .workflow-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:0;position:relative;z-index:2;}
+        .workflow-step{padding:0 2rem 0 0;cursor:default;}
+        .wf-index{position:absolute;top:-10px;right:-10px;width:22px;height:22px;background:var(--bg-deep);border:1px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:0.58rem;font-weight:700;color:var(--text-secondary);}
+        .workflow-step h3{font-size:1.1rem;font-weight:700;margin-bottom:0.75rem;letter-spacing:-0.02em;}
+        .workflow-step p{color:var(--text-secondary);font-size:0.85rem;line-height:1.75;max-width:240px;}
+        .workflow-step-duration{display:inline-flex;align-items:center;gap:7px;margin-top:1.25rem;font-family:var(--mono);font-size:0.62rem;font-weight:500;letter-spacing:0.05em;text-transform:uppercase;color:var(--text-secondary);}
+        .workflow-step-duration::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--accent);display:inline-block;}
+        .workflow-output{margin-top:6rem;background:var(--bg-card);border:1px solid var(--border);border-radius:4px;padding:4rem;display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center;position:relative;overflow:hidden;}
+        .workflow-output::after{content:'OUTPUT //';position:absolute;top:2rem;right:2.5rem;font-family:var(--mono);font-size:0.58rem;font-weight:500;letter-spacing:4px;color:rgba(255,255,255,0.04);}
+        .output-label{font-family:var(--mono);font-size:0.62rem;text-transform:uppercase;letter-spacing:3px;color:var(--accent);margin-bottom:1.5rem;}
+        .output-title{font-size:2.2rem;font-weight:800;line-height:1.15;letter-spacing:-0.03em;margin-bottom:1.5rem;}
+        .output-desc{color:var(--text-secondary);font-size:0.88rem;line-height:1.85;}
+        .output-stats{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;}
+        .output-stat{background:var(--bg-surface);border:1px solid var(--border);border-radius:4px;padding:2rem 1.5rem;transition:var(--transition);}
+        .output-stat:hover{border-color:var(--accent);}
+        .output-stat-value{font-size:2.5rem;font-weight:900;letter-spacing:-0.04em;background:linear-gradient(135deg,#fff 0%,rgba(255,255,255,0.4) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+        .output-stat-label{font-family:var(--mono);font-size:0.62rem;text-transform:uppercase;letter-spacing:2px;color:var(--text-secondary);margin-top:0.5rem;}
+
+        /* CTA */
+        #cta{padding:160px 0;}
+        .cta-wrapper{position:relative;overflow:hidden;border-radius:4px;padding:1px;background:linear-gradient(135deg,rgba(99,102,241,0.5) 0%,rgba(255,0,128,0.3) 50%,rgba(99,102,241,0.2) 100%);}
+        .cta-inner{background:var(--bg-card);border-radius:3px;padding:120px 80px;text-align:center;position:relative;overflow:hidden;}
+        .cta-bg-glow{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:800px;height:400px;background:radial-gradient(ellipse at center,rgba(99,102,241,0.12) 0%,transparent 65%);pointer-events:none;}
+        .cta-bg-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.02) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;}
+        .cta-eyebrow{display:inline-flex;align-items:center;gap:12px;font-family:var(--mono);font-size:0.68rem;font-weight:500;text-transform:uppercase;letter-spacing:3px;color:var(--accent);margin-bottom:2.5rem;position:relative;}
+        .cta-eyebrow::before,.cta-eyebrow::after{content:'';display:block;width:40px;height:1px;background:linear-gradient(90deg,transparent,var(--accent));}
+        .cta-eyebrow::after{background:linear-gradient(90deg,var(--accent),transparent);}
+        .cta-headline{font-size:clamp(2.5rem,6vw,5rem);font-weight:900;letter-spacing:-0.05em;line-height:0.95;margin-bottom:2rem;background:linear-gradient(180deg,#fff 40%,rgba(255,255,255,0.25) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;position:relative;}
+        .cta-sub{color:var(--text-secondary);font-size:1.1rem;max-width:500px;margin:0 auto 3.5rem;line-height:1.75;position:relative;}
+        .cta-actions{display:flex;gap:1.5rem;justify-content:center;flex-wrap:wrap;position:relative;}
+        .btn-cta-primary{padding:20px 52px;border-radius:4px;background:#fff;color:#000;font-weight:800;font-size:0.85rem;text-transform:uppercase;letter-spacing:2px;text-decoration:none;transition:var(--transition);position:relative;overflow:hidden;}
+        .btn-cta-primary::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--accent),#ff0080);opacity:0;transition:var(--transition);}
+        .btn-cta-primary:hover{color:#fff;transform:scale(1.04);box-shadow:0 25px 50px rgba(99,102,241,0.3);}
+        .btn-cta-primary:hover::before{opacity:1;}
+        .btn-cta-primary span{position:relative;z-index:1;}
+        .btn-cta-ghost{padding:20px 36px;border-radius:4px;border:1px solid var(--border);color:var(--text-secondary);font-weight:700;font-size:0.85rem;text-transform:uppercase;letter-spacing:2px;text-decoration:none;transition:var(--transition);}
+        .btn-cta-ghost:hover{border-color:rgba(255,255,255,0.2);color:#fff;}
+        .cta-social-proof{margin-top:4rem;display:flex;align-items:center;justify-content:center;gap:2.5rem;flex-wrap:wrap;position:relative;}
+        .cta-proof-item{display:flex;align-items:center;gap:10px;font-size:0.78rem;color:var(--text-secondary);}
+        .cta-divider{width:1px;height:20px;background:var(--border);}
+
+        /* STATUS + FOOTER */
+        .status-pill{display:inline-flex;align-items:center;gap:8px;background:var(--green-dim);color:var(--green);padding:6px 12px;border-radius:100px;font-family:var(--mono);font-size:0.68rem;font-weight:600;letter-spacing:0.04em;}
+        .status-dot{width:6px;height:6px;background:var(--green);border-radius:50%;animation:pulse 2s infinite;}
+        @keyframes pulse{0%{opacity:1;}50%{opacity:0.3;}100%{opacity:1;}}
+        footer{background:var(--bg-surface);border-top:1px solid var(--border);padding:100px 0 40px;}
+        .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:4rem;margin-bottom:80px;}
+        .footer-logo{font-weight:900;font-size:1.2rem;margin-bottom:1.5rem;display:block;}
+        .footer-col h4{font-family:var(--mono);font-size:0.68rem;text-transform:uppercase;letter-spacing:2px;color:#fff;margin-bottom:2rem;}
+        .footer-col ul{list-style:none;}
+        .footer-col li{margin-bottom:12px;}
+        .footer-col a{color:var(--text-secondary);text-decoration:none;font-size:0.9rem;transition:0.3s;}
+        .footer-col a:hover{color:var(--accent);}
+
+        @media(max-width:900px){
+            .footer-grid{grid-template-columns:1fr 1fr;gap:2rem;}
+            h1{font-size:4rem;}
+            .features-grid-top{grid-template-columns:1fr;}
+            .features-grid-bottom{grid-template-columns:1fr;}
+            .feature-card-wide{flex-direction:column;gap:2rem;}
+            .workflow-steps{grid-template-columns:1fr 1fr;gap:3rem;}
+            .workflow-output{grid-template-columns:1fr;gap:3rem;}
+            .cta-inner{padding:80px 2rem;}
+            .output-stats{grid-template-columns:1fr 1fr;}
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="container">
+        <nav>
+            <a href="#" class="logo">CASEBUILDER // v2.6</a>
+            <div style="display:flex;gap:2rem;align-items:center;">
+                <a href="#features" style="color:var(--text-secondary);text-decoration:none;font-size:0.8rem;">ENGINE</a>
+                <a href="#pricing" class="btn btn-outline" style="padding:10px 24px;font-size:0.7rem;">Initialize</a>
+            </div>
+        </nav>
+    </div>
+</header>
+
+<main>
+<div class="hero-glow"></div>
+
+<section class="hero reveal">
+    <div class="container">
+        <div class="status-pill" style="margin-bottom:2rem;">
+            <span class="status-dot"></span> SYSTEM ONLINE: VERSION 2026.4
+        </div>
+        <h1>Weaponize <br> Your Resume.</h1>
+        <p style="max-width:700px;margin:0 auto 4rem;color:var(--text-secondary);font-size:1.4rem;">The analytical engine that converts raw career history into high-performance professional schema.</p>
+        <div style="display:flex;gap:1.5rem;justify-content:center;flex-wrap:wrap;">
+            <a href="#pricing" class="btn btn-primary">Start Generation</a>
+            <a href="#workflow" class="btn btn-outline">View Protocol</a>
+        </div>
+    </div>
+</section>
+
+<!-- ===== FEATURES ===== -->
+<section id="features">
+    <div class="container">
+        <div class="features-header">
+            <div class="features-header-left">
+                <h2 class="reveal" style="font-size:0.8rem;text-transform:uppercase;letter-spacing:5px;color:var(--accent);margin-bottom:1rem;">The Hardware</h2>
+                <p class="reveal" style="font-size:2.5rem;font-weight:800;line-height:1.1;">Built for speed.<br>Optimized for human<br>and machine review.</p>
+            </div>
+            <div class="features-header-right reveal">
+                Six precision modules,<br>one unified engine.<br>
+                <span style="color:rgba(255,255,255,0.12);">—</span><br>
+                Engineered to pass every<br>gate between you and<br>the offer letter.
+            </div>
+        </div>
+
+        <div class="features-grid-top">
+
+            <div class="feature-card reveal">
+                <span class="feature-index">F–01</span>
+                <div class="icon-wrap">
+                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="2"/><path d="M8.5 8.5a5 5 0 0 0 0 7M15.5 8.5a5 5 0 0 1 0 7"/><path d="M5.5 5.5a9 9 0 0 0 0 13M18.5 5.5a9 9 0 0 1 0 13"/></svg>
+                </div>
+                <h3>Neural Scoring</h3>
+                <p>Matches candidate syntax against 1.2M+ high-tier job descriptions to ensure linguistic resonance with hiring language patterns across every industry.</p>
+                <span class="feature-tag">AI-Powered</span>
+            </div>
+
+            <div class="feature-card reveal">
+                <span class="feature-index">F–02</span>
+                <div class="icon-wrap">
+                    <svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/><line x1="12" y1="3" x2="12" y2="21" opacity="0.4"/></svg>
+                </div>
+                <h3>Schema Injection</h3>
+                <p>Injects JSON-LD and invisible metadata to ensure your resume is indexed correctly by ATS crawlers — invisible to humans, lethal to parsers.</p>
+                <span class="feature-tag">ATS-Ready</span>
+            </div>
+
+            <div class="feature-card reveal">
+                <span class="feature-index">F–03</span>
+                <div class="icon-wrap">
+                    <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><polyline points="9 15 12 18 15 15"/></svg>
+                </div>
+                <h3>Vector Export</h3>
+                <p>High-fidelity PDF generation with sub-pixel typography and exact color fidelity. Perfectly legible at any zoom level, on any device or printer.</p>
+                <span class="feature-tag">Print-Grade</span>
+            </div>
+        </div>
+
+        <div class="features-grid-bottom">
+
+            <div class="feature-card feature-card-wide reveal">
+                <div class="feature-body">
+                    <span class="feature-index">F–04</span>
+                    <div class="icon-wrap">
+                        <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20" opacity="0.35"/></svg>
+                    </div>
+                    <h3>Keyword Heatmap</h3>
+                    <p>Visualizes keyword density gaps against the target role spec. Surfaces missing terms before submission so every word earns its place.</p>
+                    <span class="feature-tag">Live Analysis</span>
+                </div>
+                <div class="feature-visual">
+                    <div class="score-bars">
+                        <div class="score-bar"></div>
+                        <div class="score-bar"></div>
+                        <div class="score-bar"></div>
+                        <div class="score-bar"></div>
+                        <div class="score-bar"></div>
+                        <div class="score-bar"></div>
+                        <div class="score-bar"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="feature-card feature-card-wide reveal">
+                <div class="feature-body">
+                    <span class="feature-index">F–05</span>
+                    <div class="icon-wrap">
+                        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/><line x1="11" y1="8" x2="11" y2="14"/></svg>
+                    </div>
+                    <h3>Semantic Token Analysis</h3>
+                    <p>Breaks every bullet into semantic tokens and scores each against recruiter attention patterns. Elevates high-signal phrases, eliminates filler.</p>
+                    <span class="feature-tag">Deep Parsing</span>
+                </div>
+                <div class="feature-visual">
+                    <div class="token-stream">
+                        <span class="token token-green">Led</span>
+                        <span class="token token-blue">cross-functional</span>
+                        <span class="token token-gray">team</span>
+                        <span class="token token-green">shipped</span>
+                        <span class="token token-red">helped</span><br>
+                        <span class="token token-green">increased</span>
+                        <span class="token token-blue">ARR 42%</span>
+                        <span class="token token-gray">within</span>
+                        <span class="token token-green">Q2</span><br>
+                        <span class="token token-red">responsible for</span>
+                        <span class="token token-green">architected</span>
+                        <span class="token token-blue">scalable</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== WORKFLOW ===== -->
+<section id="workflow">
+    <div class="container">
+        <div class="workflow-header reveal">
+            <div>
+                <h2>The Protocol</h2>
+                <p class="workflow-header-title">Four stages.<br>One perfect output.</p>
+            </div>
+            <div class="workflow-header-meta">
+                avg. processing time &nbsp;<strong style="color:#fff;">8.3s</strong><br>
+                docs generated &nbsp;<strong style="color:#fff;">1.4M+</strong><br>
+                interview rate lift &nbsp;<strong style="color:var(--green);">+63%</strong>
+            </div>
+        </div>
+
+        <div class="workflow-track reveal">
+            <div class="workflow-track-line"></div>
+            <div class="workflow-track-progress" id="trackProgress"></div>
+            <div class="workflow-steps">
+
+                <div class="workflow-step">
+                    <div class="wf-icon-wrap">
+                        <svg viewBox="0 0 24 24"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>
+                        <span class="wf-index">01</span>
+                    </div>
+                    <h3>Data Ingestion</h3>
+                    <p>Pass your raw career history through our parsing gates. We extract dates, metrics, responsibilities, and impact signals automatically.</p>
+                    <span class="workflow-step-duration">~1.2s</span>
+                </div>
+
+                <div class="workflow-step">
+                    <div class="wf-icon-wrap">
+                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/></svg>
+                        <span class="wf-index">02</span>
+                    </div>
+                    <h3>Role Targeting</h3>
+                    <p>Paste any job description. The engine deconstructs the role's requirement hierarchy and maps your history to its exact language model.</p>
+                    <span class="workflow-step-duration">~2.1s</span>
+                </div>
+
+                <div class="workflow-step">
+                    <div class="wf-icon-wrap">
+                        <svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+                        <span class="wf-index">03</span>
+                    </div>
+                    <h3>Neural Refinement</h3>
+                    <p>AI re-weights achievements based on seniority signals, impact quantifiers, and action verb strength. Weak bullets are surgically rewritten.</p>
+                    <span class="workflow-step-duration">~3.8s</span>
+                </div>
+
+                <div class="workflow-step">
+                    <div class="wf-icon-wrap">
+                        <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                        <span class="wf-index">04</span>
+                    </div>
+                    <h3>Schema Export</h3>
+                    <p>Outputs a vector-grade PDF embedded with ATS-optimized metadata. One document engineered to clear every filter between you and the offer.</p>
+                    <span class="workflow-step-duration">~1.2s</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="workflow-output reveal">
+            <div>
+                <p class="output-label">Final Output</p>
+                <h3 class="output-title">A document that performs at every layer of the stack.</h3>
+                <p class="output-desc">From the ATS crawler that reads it first, to the human who decides last — CaseBuilder optimizes every signal at every stage of the hiring pipeline.</p>
+            </div>
+            <div class="output-stats">
+                <div class="output-stat"><div class="output-stat-value">98%</div><div class="output-stat-label">ATS Pass Rate</div></div>
+                <div class="output-stat"><div class="output-stat-value">63%</div><div class="output-stat-label">More Interviews</div></div>
+                <div class="output-stat"><div class="output-stat-value">8.3s</div><div class="output-stat-label">Avg. Gen Time</div></div>
+                <div class="output-stat"><div class="output-stat-value">1.4M</div><div class="output-stat-label">Docs Generated</div></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== PRICING ===== -->
+<section id="pricing" class="container">
+    <div class="grid" style="align-items:center;">
+        <div class="card reveal" style="border-style:dashed;">
+            <h4 style="color:var(--text-secondary);margin-bottom:1rem;">Base Access</h4>
+            <div style="font-size:4rem;font-weight:900;">$0</div>
+            <ul style="list-style:none;margin:2rem 0;color:var(--text-secondary);">
+                <li>• Single Document</li>
+                <li>• Standard ATS Check</li>
+            </ul>
+            <a href="#" class="btn btn-outline" style="width:100%;text-align:center;display:block;">Get Started</a>
+        </div>
+        <div class="card-pro reveal">
+            <div class="card-pro-inner">
+                <h4 style="color:var(--accent);margin-bottom:1rem;">Elite Terminal</h4>
+                <div style="font-size:4rem;font-weight:900;">$15<span style="font-size:1rem;color:var(--text-secondary);">/mo</span></div>
+                <ul style="list-style:none;margin:2rem 0;">
+                    <li>• Unlimited Documents</li>
+                    <li>• Deep Neural Tailoring</li>
+                    <li>• Keyword Heatmaps</li>
+                </ul>
+                <a href="#" class="btn btn-primary" style="width:100%;text-align:center;display:block;">Upgrade Now</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== CTA ===== -->
+<section id="cta">
+    <div class="container">
+        <div class="cta-wrapper reveal">
+            <div class="cta-inner">
+                <div class="cta-bg-glow"></div>
+                <div class="cta-bg-grid"></div>
+                <div class="cta-eyebrow">Ready to Execute</div>
+                <h2 class="cta-headline">Your next role<br>starts here.</h2>
+                <p class="cta-sub">Stop sending the same resume to every job. Start deploying precision-engineered documents that speak the language of every role you target.</p>
+                <div class="cta-actions">
+                    <a href="#pricing" class="btn-cta-primary"><span>Generate Free Resume</span></a>
+                    <a href="#features" class="btn-cta-ghost">View The Engine</a>
+                </div>
+                <div class="cta-social-proof">
+                    <div class="cta-proof-item">
+                        <div class="proof-icon-wrap">
+                            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                        </div>
+                        No credit card required
+                    </div>
+                    <div class="cta-divider"></div>
+                    <div class="cta-proof-item">
+                        <div class="proof-icon-wrap">
+                            <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                        </div>
+                        First doc in under 60 seconds
+                    </div>
+                    <div class="cta-divider"></div>
+                    <div class="cta-proof-item">
+                        <div class="proof-icon-wrap">
+                            <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        </div>
+                        AES-256 encrypted
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</main>
+
+<footer>
+    <div class="container">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <a href="#" class="footer-logo">CASEBUILDER</a>
+                <p style="color:var(--text-secondary);font-size:0.9rem;max-width:300px;margin-bottom:2rem;">The industry standard for engineering high-performance career documents since 2026.</p>
+                <div class="status-pill"><span class="status-dot"></span> ALL SYSTEMS NOMINAL</div>
+            </div>
+            <div class="footer-col">
+                <h4>Platform</h4>
+                <ul>
+                    <li><a href="#">The Engine</a></li>
+                    <li><a href="#">Schema Lab</a></li>
+                    <li><a href="#">Direct Export</a></li>
+                    <li><a href="#">Pricing</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Company</h4>
+                <ul>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Careers</a></li>
+                    <li><a href="#">Privacy Protocol</a></li>
+                    <li><a href="#">Security</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Social</h4>
+                <ul>
+                    <li><a href="#">Twitter / X</a></li>
+                    <li><a href="#">LinkedIn</a></li>
+                    <li><a href="#">GitHub</a></li>
+                </ul>
+            </div>
+        </div>
+        <div style="padding-top:40px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;">
+            <p style="font-size:0.75rem;color:var(--text-secondary);">&copy; 2026 CASEBUILDER TECHNOLOGIES. BUILT FOR THE BOLD.</p>
+            <p style="font-size:0.75rem;color:var(--text-secondary);letter-spacing:2px;">ENCRYPTED VIA AES-256</p>
+        </div>
+    </div>
+</footer>
+
+<script>
+    const revealCallback = (entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) entry.target.classList.add('active');
+        });
+    };
+    const observer = new IntersectionObserver(revealCallback, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    window.addEventListener('scroll', () => {
+        const scroll = window.scrollY;
+        const heroGlow = document.querySelector('.hero-glow');
+        if (scroll < 1000) {
+            const opacity = 0.18 + (scroll / 5000);
+            heroGlow.style.background = `radial-gradient(circle at 50% 20%, rgba(99,102,241,${opacity}) 0%, transparent 50%)`;
+        }
+    });
+
+    const progressBar = document.getElementById('trackProgress');
+    const trackObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            progressBar.style.width = entry.isIntersecting ? '100%' : '0%';
+        });
+    }, { threshold: 0.3 });
+    trackObserver.observe(document.querySelector('.workflow-track'));
+</script>
+</body>
+</html>
